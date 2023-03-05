@@ -5,6 +5,7 @@ module.exports = {
     entry: {
         index: './src/index.js',
         display: './src/display.js',
+        getAPI: './src/getAPI.js',  
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -16,6 +17,9 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
+  },
+  optimization: {
+    runtimeChunk: 'single',
   },
   module: {
     rules: [

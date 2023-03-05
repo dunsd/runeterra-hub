@@ -1,34 +1,53 @@
-const apiKey = "RGAPI-baa48dc0-774f-422e-a93a-f73b252b7ebb";
+import { generateDisplay } from "./display";
+let currentUser = {};
 
-// fetch("https://europe.api.riotgames.com/lor/match/v1/matches/by-puuid/OLAK4Fna1yAyLqMFTJ1gPqICrCGwWEZPSQs9JdWtGtzz1NJezSSH8QMgF2jrtcmk0u5fV7lyPl8Uvw/ids?api_key=RGAPI-214a8f70-95a8-4018-a3c7-3dd2a6c0ac49")
-// .then((response) => response.json())
-// .then((data) => console.log(data));
+const apiKey = "RGAPI-f21fa124-7f72-4d9a-bb2b-4503fbd0fee6";
+
+const getUserButton = document.querySelector('.getUser');
+
+
+
+getUserButton.addEventListener('click', () => getName());
   
-// get unique PUUID via username (PUUID used for some API queries)
-function getPUUID(name) { 
-    // fetch("https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+ name + "?api_key=" + apiKey)
-    // .then((response) => response.json())
-    getUser(name)
-    .then((data) => console.log(data.puuid));
+ function getName(){
+    let name = prompt("Please enter your username:");
+    console.log("getName");
+    getUserFromName(name);
+    
 }
+
 function buildUserURL(name){
     return "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+ name + "?api_key=" + apiKey;
 }
 
 async function getUserFromName(name){
-    const response = await fetch(buildUserURL(name));
+    const response = await fetch(buildUserURL(name, {
+        mode: 'cors'
+    }));
     const userData = await response.json();
-    const userPUUID = userData.puuid;
-    console.log("Name: " + userPUUID);
-    return userData.name;
+    
+    currentUser = userData;
+    setUser(userData);
+    console.log(currentUser);
+    generateDisplay();
+    
 }
 
-async function generateDisplay(){
-    const userDiv = document.createElement('div');
-    const stats = document.querySelector('.stats');
-    //let user = await getUserFromName("Ulfilas");
-    
-    stats.textContent = await getUserFromName("Ulfilas");
-  }
+function setUser(user) {
+    localStorage.setItem("currentUser", JSON.stringify(user));
+}
 
-export {getPUUID, getUserFromName, generateDisplay};
+function getUserFromStorage() {
+    currentUser = JSON.parse(localStorage.getItem("currentUser")) || [];
+    console.log(currentUser);
+}
+
+async function getMatchData(){
+    const response = await fetch("https://europe.api.riotgames.com/lor/match/v1/matches/by-puuid/"+currentUser.puuid + "/ids?api_key="+ apiKey, {
+        mode: 'cors'
+    });
+    const matchHistory = await response.json();
+    console.log(matchHistory);
+}
+
+export {getUserFromName, getUserFromStorage, getMatchData, currentUser };

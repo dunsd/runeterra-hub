@@ -1,6 +1,6 @@
 import { getPUUID, getUserFromName, currentUser } from './getAPI';
 
-async function generateDisplay(data){
+async function generateDisplay(){
   const userDiv = document.createElement('div');
   const stats = document.querySelector('.stats');
   
@@ -8,5 +8,8 @@ async function generateDisplay(data){
    puuid: ${currentUser.puuid}.`;
 }
 
+function displayMatch(){
+  
+}
 
 export {generateDisplay};

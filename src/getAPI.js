@@ -1,7 +1,9 @@
 import { generateDisplay } from "./display";
+import apiKey from "./apiKey";
 let currentUser = {};
+let matchData = [];
 
-const apiKey = "RGAPI-f21fa124-7f72-4d9a-bb2b-4503fbd0fee6";
+
 
 const getUserButton = document.querySelector('.getUser');
 
@@ -47,6 +49,7 @@ async function getMatchData(){
         mode: 'cors'
     });
     const matchHistory = await response.json();
+    let matchData = matchHistory;
     console.log(matchHistory);
 }
 

@@ -2,6 +2,7 @@ import { generateDisplay } from "./display";
 import apiKey from "./apiKey";
 let currentUser = {};
 let matchData = [];
+let matchInfo = [];
 
 
 
@@ -23,6 +24,7 @@ function buildUserURL(name){
 }
 
 async function getUserFromName(name){
+    try {
     const response = await fetch(buildUserURL(name, {
         mode: 'cors'
     }));
@@ -32,6 +34,10 @@ async function getUserFromName(name){
     setUser(userData);
     console.log(currentUser);
     generateDisplay();
+    }
+    catch(err){
+        console.log(err);
+    }   
     
 }
 
@@ -45,12 +51,42 @@ function getUserFromStorage() {
 }
 
 async function getMatchData(){
-    const response = await fetch("https://europe.api.riotgames.com/lor/match/v1/matches/by-puuid/"+currentUser.puuid + "/ids?api_key="+ apiKey, {
+    try {const response = await fetch("https://europe.api.riotgames.com/lor/match/v1/matches/by-puuid/"+currentUser.puuid + "/ids?api_key="+ apiKey, {
         mode: 'cors'
-    });
+    })
     const matchHistory = await response.json();
     let matchData = matchHistory;
-    console.log(matchHistory);
+    console.log(matchData);
+    console.log(matchData[0]);
+    console.log(matchData[1]);
+    return matchData;
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
 
-export {getUserFromName, getUserFromStorage, getMatchData, currentUser };
+async function getMatchInfo(){  
+        let matchHistory = await getMatchData();
+        let matchTemp = [];
+        for(let i=0; i<matchHistory.length;i+=1){
+            try{
+                let response = await fetch("https://europe.api.riotgames.com/lor/match/v1/matches/"+matchHistory[i] + "?api_key=" + apiKey, {
+                //let response = await fetch("https://europe.api.riotgames.com/lor/match/v1/matches/"+ matchData[i] + "?api_key="+ apiKey, {
+                mode: 'cors'
+            })
+                matchTemp[i] = await response.json();
+                console.log(matchTemp);
+                console.log(matchTemp[i].info.game_mode);
+                //matchInfo[0] = matchTemp;
+                console.log("Match Info" + matchInfo[i]);
+            
+            }
+    catch (err){
+        console.log(err);
+    }
+}
+console.log(matchInfo);
+}
+
+export {getUserFromName, getUserFromStorage, getMatchData, currentUser, getMatchInfo };

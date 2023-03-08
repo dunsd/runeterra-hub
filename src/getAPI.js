@@ -1,4 +1,4 @@
-import { generateDisplay } from "./display";
+import { generateDisplay, displayMatchHistory } from "./display";
 import apiKey from "./apiKey";
 let currentUser = {};
 let matchData = [];
@@ -57,9 +57,6 @@ async function getMatchData(){
     const matchHistory = await response.json();
     let matchData = matchHistory;
     console.log(matchData);
-    console.log(matchData[0]);
-    console.log(matchData[1]);
-    return matchData;
     }
     catch (err) {
         console.log(err);
@@ -67,19 +64,18 @@ async function getMatchData(){
 }
 
 async function getMatchInfo(){  
+
         let matchHistory = await getMatchData();
-        let matchTemp = [];
-        for(let i=0; i<matchHistory.length;i+=1){
+        let matchTemp = [{}];
+        for(let i=0; i<10;i+=1){
             try{
+                
                 let response = await fetch("https://europe.api.riotgames.com/lor/match/v1/matches/"+matchHistory[i] + "?api_key=" + apiKey, {
-                //let response = await fetch("https://europe.api.riotgames.com/lor/match/v1/matches/"+ matchData[i] + "?api_key="+ apiKey, {
                 mode: 'cors'
-            })
+                })
                 matchTemp[i] = await response.json();
-                console.log(matchTemp);
-                console.log(matchTemp[i].info.game_mode);
-                //matchInfo[0] = matchTemp;
-                console.log("Match Info" + matchInfo[i]);
+                matchInfo[i] = matchTemp[i];
+                console.log("Match Info" + matchInfo[i].info.game_type);
             
             }
     catch (err){
@@ -87,6 +83,7 @@ async function getMatchInfo(){
     }
 }
 console.log(matchInfo);
+displayMatchHistory(matchInfo);
 }
 
 export {getUserFromName, getUserFromStorage, getMatchData, currentUser, getMatchInfo };

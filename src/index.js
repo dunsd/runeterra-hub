@@ -6,5 +6,5 @@ import {generateDisplay} from './display';
 getUserFromStorage();
 generateDisplay();
 
-//getMatchData();
+getMatchData();
 getMatchInfo();
